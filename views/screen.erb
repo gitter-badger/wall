@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>TNI WALL</title>
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.12.0.min.js"></script>
+    <script type="text/javascript" src="http://<%=request.host%>:<%=request.port%>/faye/client.js"></script>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/style.css" rel="stylesheet">
+
+    <script type="text/javascript">
+      var faye_client = new Faye.Client( 'http://<%=request.host%>:<%=request.port%>/faye' );
+
+      faye_client.subscribe( '/<%=@channel%>', function( data ) {
+        var dt = new Date();
+        var time = dt.getHours() + ":" + dt.getMinutes()
+        var div = $( 'ul#<%=@channel%>' ).prepend( '<li>'
+              +'<a href="#" class="clearfix">'
+                +'<img src="http://8ttendance.com/eon/themes/bootstrap/img/no-user.jpg" alt="" class="img-circle">'
+                +'<div class="friend-name"> '
+                  +'<strong>Message SMS</strong>'
+                +'</div>'
+                +'<div class="last-message text-muted">' + data + '</div>'
+                +'<small class="time text-muted">'+ time + '</small>'
+              +'</a>'
+            +'</li>' );
+        if ($( 'ul#<%=@channel%> li' ).length > 1){
+          $( 'ul#<%=@channel%> li:last' ).remove();
+          }
+      });
+
+    </script>
+  </head>
+
+  <body>
+    <div class="container bootstrap snippet">
+      <!--<div class="row">-->
+        <ul class="friend-list" id="<%=@channel%>" style="font-size: calc(2vw + 2vh + 2vmin);">
+          <% @saved_data.each do |message| %>
+            <li>
+              <a href="#" class="clearfix">
+                <img src="http://8ttendance.com/eon/themes/bootstrap/img/no-user.jpg" alt="" class="img-circle">
+                <div class="friend-name"> 
+                  <strong>Message <%=message.provider%></strong>
+                </div>
+                <div class="last-message text-muted"><%=message.content%></div>
+                <small class="time text-muted"><%=message.created_at.strftime('%H:%M')%></small>
+                <!--<small class="chat-alert label label-danger">1</small>-->
+              </a>
+            </li>
+          <% end %>
+        </ul>
+      <!--</div>-->
+    </div>
+
+
+  </body>
+

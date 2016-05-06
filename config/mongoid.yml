@@ -1,0 +1,12 @@
+development:
+  clients:
+    default:
+      database: transilienwall
+      hosts:
+        - localhost:27017
+production:
+  clients:
+    default:
+      database: transilienwall
+      hosts:
+        - localhost:27017

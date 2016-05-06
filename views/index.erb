@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>TNI WALL</title>
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.12.0.min.js"></script>
+    <script type="text/javascript" src="http://<%=request.host%>:<%=request.port%>/faye/client.js"></script>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+
+    <script type="text/javascript">
+      var faye_client = new Faye.Client( 'http://<%=request.host%>:<%=request.port%>/faye' );
+
+      <% @channels.each do |channel| %>
+        faye_client.subscribe( '/<%=channel.name%>', function( data ) {
+        var div = $( 'ul#<%=channel.name%>' ).prepend( '<li>' + data + '</li>' );
+        if ($( 'ul#<%=channel.name%> li' ).length > 10){
+            $('ul#<%=channel.name%> li:last').remove();
+          }
+        
+      });
+      <%end%>
+    </script>
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Panneau de controle</h1>      
+
+      <div class="row">
+
+        <% @channels.each do |channel| %>
+          <div class="col-md-3">
+            <div class="panel panel-info">
+              <div class="panel-heading">
+                <%=channel.name.capitalize%>
+                / <a href='/display/chat/<%=channel.name%>'> Chat</a>
+                / <a href='/display/screen/<%=channel.name%>'> Ecran</a>
+              </div>
+              <div class="panel-body">
+                <ul id="<%=channel.name%>">
+                  <% @saved_data[channel.name].each do |message| %>
+                    <li><%= message.content %></li>
+                  <% end %>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+        <%end%>
+      </div>
+
+    </div>
+  </body>
+</html>
